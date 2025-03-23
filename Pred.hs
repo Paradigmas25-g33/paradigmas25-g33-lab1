@@ -12,7 +12,7 @@ type Pred a = a -> Bool
 -- segundo argumento con dicha figura.
 -- Por ejemplo, `cambiar (== Triangulo) (\x -> Rotar (Basica x))` rota
 -- todos los triángulos.
-cambiar :: Pred a -> (a -> Dibujo a) -> Dibujo a -> Dibujo a
+cambiar :: Pred a -> a -> Dibujo a -> Dibujo a -> Dibujo a
 
 -- Alguna básica satisface el predicado.
 anyDib :: Pred a -> Dibujo a -> Bool
