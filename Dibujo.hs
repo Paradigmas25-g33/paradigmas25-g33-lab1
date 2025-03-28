@@ -8,6 +8,7 @@ data Dibujo a = Basica a
               | Apilar Float Float (Dibujo a) (Dibujo a)
               | Juntar Float Float (Dibujo a) (Dibujo a)
               | Encimar (Dibujo a) (Dibujo a)
+              deriving (Show, Eq)
 
 
 -- Composición n-veces de una función con sí misma.
