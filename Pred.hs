@@ -43,24 +43,55 @@ allDib p = foldDib (\x -> p x) id id id (\_ _ b1 b2 -> b1 && b2) (\_ _ b1 b2 -> 
 
 -- Hay 4 rotaciones seguidas.
 esRot360 :: Pred (Dibujo a)
-esRot360 = undefined --undefined asi compila
+esRot360 dib = 
+    case foldDib
+        (\_ -> (0, False))  -- Caso base: figura básica
+        (\(n, _) -> (n + 1, n + 1 == 4))  -- Rotar: incrementa contador y verifica si llega a 4
+        (\(n, _) -> (0, False))  -- Rotar45: reinicia contador
+        (\(n, _) -> (0, False))  -- Espejar: reinicia contador
+        (\_ _ (n1, b1) (n2, b2) -> (0, b1 || b2))  -- Apilar: combina resultados
+        (\_ _ (n1, b1) (n2, b2) -> (0, b1 || b2))  -- Juntar: combina resultados
+        (\(n1, b1) (n2, b2) -> (0, b1 || b2))  -- Encimar: combina resultados
+        dib of
+    (_, True) -> True  -- Si se encontró una secuencia de 4 rotaciones
+    _ -> False
 
 -- Hay 2 espejados seguidos.
 esFlip2 :: Pred (Dibujo a)
-esFlip2 = undefined
+esFlip2 = checkFlip2 False
+  where
+    checkFlip2 :: Bool -> Dibujo a -> Bool
+    checkFlip2 anteriorEspejo dib = case dib of
+        Basica _ -> False
+        Rotar d -> checkFlip2 False d
+        Rotar45 d -> checkFlip2 False d
+        Espejar d -> anteriorEspejo || checkFlip2 True d
+        Apilar _ _ d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
+        Juntar _ _ d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
+        Encimar d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
 
-data Superfluo = RotacionSuperflua | FlipSuperfluo
 
+data Superfluo = RotacionSuperflua | FlipSuperfluo deriving (Show)
 ---- Chequea si el dibujo tiene una rotacion superflua
 errorRotacion :: Dibujo a -> [Superfluo]
-errorRotacion = undefined
+errorRotacion dib 
+    | esRot360 dib = [RotacionSuperflua]
+    | otherwise    = []
 
 -- Chequea si el dibujo tiene un flip superfluo
 errorFlip :: Dibujo a -> [Superfluo]
-errorFlip = undefined
+errorFlip dib
+    | esFlip2 dib = [FlipSuperfluo]
+    | otherwise   = []
 
 -- Aplica todos los chequeos y acumula todos los errores, y
 -- sólo devuelve la figura si no hubo ningún error.
 checkSuperfluo :: Dibujo a -> Either [Superfluo] (Dibujo a)
-checkSuperfluo = undefined
+checkSuperfluo dib =
+    let rotErrs = errorRotacion dib
+        flipErrs = errorFlip dib
+        allErrs = rotErrs ++ flipErrs
+    in if null allErrs 
+       then Right dib 
+       else Left allErrs
 
