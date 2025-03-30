@@ -3,10 +3,10 @@ import Dibujo
 import Interp
 import Basica.Comun
 
-data Basica = Triangulo | TrainguloVioleta
+data Basica = Triangulo | TrainguloVioleta deriving (Show)
 
 ejemplo :: Dibujo Basica
-ejemplo = Apilar 1 1 (Figura Triangulo) (Rotar (Figura TrainguloVioleta))
+ejemplo = Apilar 1 1 (Basica Triangulo) (Rotar (Basica TrainguloVioleta))
 
 interpBas :: Basica -> ImagenFlotante
 interpBas Triangulo = triangulo

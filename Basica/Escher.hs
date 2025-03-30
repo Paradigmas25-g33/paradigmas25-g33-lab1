@@ -21,17 +21,17 @@ dibujoT d =
 -- lado con nivel de detalle
 lado :: Int -> Dibujo Escher -> Dibujo Escher
 lado n d
-    | n < 0 = Figura False  -- no deberia pasar
-    | n == 1 = cuarteto (Figura False) (Figura False) (Rotar d) d
+    | n < 0 = Basica False  -- no deberia pasar
+    | n == 1 = cuarteto (Basica False) (Basica False) (Rotar d) d
     | n > 1 =
         let l = lado (n-1) d
         in cuarteto l l (Rotar d) d
 
--- esquina con nivel de detalle en base a la figura p
+-- esquina con nivel de detalle en base a la figurita p
 esquina :: Int -> Dibujo Escher -> Dibujo Escher
 esquina n d
-    | n < 0 = Figura False  -- no deberia pasar
-    | n == 1 = cuarteto (Figura False) (Figura False) (Figura False) (dibujoU d)
+    | n < 0 = Basica False  -- no deberia pasar
+    | n == 1 = cuarteto (Basica False) (Basica False) (Basica False) (dibujoU d)
     | n > 1 =
         let l = lado (n-1) d
         in cuarteto (esquina (n-1) d) l (Rotar l) (dibujoU d)
