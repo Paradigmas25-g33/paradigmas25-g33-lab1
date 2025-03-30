@@ -1,7 +1,7 @@
 module Pred where
 
 import Dibujo
-import Language.Haskell.TH (FamilyResultSig(TyVarSig))
+import Language.Haskell.TH (FamilyResultSig(TyVarSig)) 
 
 type Pred a = a -> Bool
 
@@ -58,17 +58,19 @@ esRot360 dib =
 
 -- Hay 2 espejados seguidos.
 esFlip2 :: Pred (Dibujo a)
-esFlip2 = checkFlip2 False
-  where
-    checkFlip2 :: Bool -> Dibujo a -> Bool
-    checkFlip2 anteriorEspejo dib = case dib of
-        Basica _ -> False
-        Rotar d -> checkFlip2 False d
-        Rotar45 d -> checkFlip2 False d
-        Espejar d -> anteriorEspejo || checkFlip2 True d
-        Apilar _ _ d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
-        Juntar _ _ d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
-        Encimar d1 d2 -> checkFlip2 False d1 || checkFlip2 False d2
+esFlip2 dib = 
+    case foldDib
+        (\_ -> (0, False))  -- Caso base: figura básica
+        (\(n, _) -> (0, False))  -- Rotar: incrementa contador y verifica si llega a 4
+        (\(n, _) -> (0, False))  -- Rotar45: reinicia contador
+        (\(n, _) -> (n + 1, n + 1 >=2 ))  -- Espejar: reinicia contador
+        (\_ _ (n1, b1) (n2, b2) -> (0, b1 || b2))  -- Apilar: combina resultados
+        (\_ _ (n1, b1) (n2, b2) -> (0, b1 || b2))  -- Juntar: combina resultados
+        (\(n1, b1) (n2, b2) -> (0, b1 || b2))  -- Encimar: combina resultados
+        dib of
+    (_, True) -> True  -- Si se encontró una secuencia de 4 rotaciones
+    _ -> False
+
 
 
 data Superfluo = RotacionSuperflua | FlipSuperfluo deriving (Show)
