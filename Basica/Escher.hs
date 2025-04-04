@@ -9,13 +9,13 @@ type Escher = Bool
 
 -- el dibujo u
 dibujoU :: Dibujo Escher -> Dibujo Escher
-dibujoU p = encimar4 $ Rot45 p
+dibujoU p = encimar4 $ Rotar45 p
 
 -- el dibujo t
 dibujoT :: Dibujo Escher -> Dibujo Escher
 dibujoT d =
-    let r1 = Rot45 d
-        r2 = Espejar $ Rotar (Rot45 d)
+    let r1 = Rotar45 d
+        r2 = Espejar $ Rotar (Rotar45 d)
     in (d ^^^ r1) ^^^ r2
 
 -- lado con nivel de detalle
@@ -26,6 +26,7 @@ lado n d
     | n > 1 =
         let l = lado (n-1) d
         in cuarteto l l (Rotar d) d
+    | otherwise = error "Unhandled pattern in lado function"
 
 -- esquina con nivel de detalle en base a la figurita p
 esquina :: Int -> Dibujo Escher -> Dibujo Escher
@@ -35,6 +36,7 @@ esquina n d
     | n > 1 =
         let l = lado (n-1) d
         in cuarteto (esquina (n-1) d) l (Rotar l) (dibujoU d)
+    | otherwise = error "Unhandled pattern in esquina function"
 
 -- por suerte no tenemos que poner el tipo!
 noneto p q r s t u v w x =
