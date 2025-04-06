@@ -13,6 +13,13 @@ type Interpretacion a = a -> ImagenFlotante
 mitad :: Vector -> Vector
 mitad = (0.5 V.*)
 
+add :: Vector -> Vector -> Vector
+add (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+-- Resta de dos vectores
+sub :: Vector -> Vector -> Vector
+sub (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
+
 -- Interpretaciones de los constructores de Dibujo
 
 -- Interpreta el operador de rotación
@@ -24,13 +31,13 @@ interp_rotar f v1 v2 v3 =
 -- Interpreta el operador de espejar
 interp_espejar :: ImagenFlotante -> ImagenFlotante
 interp_espejar f v1 v2 v3 =
-    let espejo = scale (-1) 1 (f v1 v2 v3)
+    let espejo = f (add v1 v2) (sub (sub v2 v2) v2) v3
     in espejo
 
 -- interpreta el operador de rotación 45
 interp_rotar45 :: ImagenFlotante -> ImagenFlotante
 interp_rotar45 f v1 v2 v3 =
-    let rotacion = rotate 45 (f v1 v2 v3)
+    let rotacion = (f (add v1 (mitad (add v2 v3))) (mitad (add v2 v3)) (mitad (sub v3 v2)))
     in rotacion
 
 -- interpreta el operador de apilar
@@ -65,4 +72,3 @@ interp f = foldDib
     (\n m d1 d2 -> interp_apilar (round n) (round m) d1 d2) 
     (\n m d1 d2 -> interp_juntar (round n) (round m) d1 d2) 
     interp_encimar
-    
