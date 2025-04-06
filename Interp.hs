@@ -55,12 +55,14 @@ interp_encimar f g v1 v2 v3 =
     in pictures [encimadoF, encimadoG]
 
 -- interpreta cualquier expresión del tipo Dibujo a
+
 interp :: Interpretacion a -> Dibujo a -> ImagenFlotante
-interp f d = case d of
-    (Basica p) -> f p
-    (Rotar d1) -> interp_rotar (interp f d1)
-    (Espejar d1) -> interp_espejar (interp f d1)
-    (Rotar45 d1) -> interp_rotar45 (interp f d1)
-    (Apilar n m d1 d2) -> interp_apilar (round n) (round m) (interp f d1) (interp f d2)
-    (Juntar n m d1 d2) -> interp_juntar (round n) (round m) (interp f d1) (interp f d2)
-    (Encimar d1 d2) -> interp_encimar (interp f d1) (interp f d2)
+interp f = foldDib 
+    f 
+    interp_rotar 
+    interp_espejar 
+    interp_rotar45 
+    (\n m d1 d2 -> interp_apilar (round n) (round m) d1 d2) 
+    (\n m d1 d2 -> interp_juntar (round n) (round m) d1 d2) 
+    interp_encimar
+    

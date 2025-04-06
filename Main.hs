@@ -33,7 +33,7 @@ data Conf a = Conf {
 
 ej ancho alto = Conf {
                 basic = E.interpBas
-              , fig = E.escher 1 E.Fish
+              , fig = E.escher 3 E.Fish
               , width = ancho
               , height = alto
               , r = id
@@ -44,7 +44,7 @@ moverCentro ancho alto p = translate (-ancho / 2) (-alto / 2) p
 
 ejCentro ancho alto = Conf {
                 basic = E.interpBas
-              , fig = E.escher 1 E.Fish
+              , fig = E.escher 3 E.Fish
               , width = ancho
               , height = alto
               , r = moverCentro ancho alto
