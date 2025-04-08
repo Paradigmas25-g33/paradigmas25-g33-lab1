@@ -23,39 +23,43 @@ sub (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
 -- Interpretaciones de los constructores de Dibujo
 
 -- Interpreta el operador de rotación
-interp_rotar :: ImagenFlotante -> ImagenFlotante
+interp_rotar :: ImagenFlotante -> ImagenFlotante --funciona
 interp_rotar f v1 v2 v3 =
-    let rotacion = rotate 90 (f v1 v2 v3)
+    let rotacion = (f (add v1 v2) v3 (sub (sub v2 v2) v2))
     in rotacion
 
 -- Interpreta el operador de espejar
-interp_espejar :: ImagenFlotante -> ImagenFlotante
+interp_espejar :: ImagenFlotante -> ImagenFlotante --no funciona
 interp_espejar f v1 v2 v3 =
     let espejo = f (add v1 v2) (sub (sub v2 v2) v2) v3
     in espejo
 
 -- interpreta el operador de rotación 45
-interp_rotar45 :: ImagenFlotante -> ImagenFlotante
+interp_rotar45 :: ImagenFlotante -> ImagenFlotante -- no funciona
 interp_rotar45 f v1 v2 v3 =
     let rotacion = (f (add v1 (mitad (add v2 v3))) (mitad (add v2 v3)) (mitad (sub v3 v2)))
     in rotacion
 
 -- interpreta el operador de apilar
-interp_apilar :: Int -> Int -> ImagenFlotante -> ImagenFlotante -> ImagenFlotante
+interp_apilar :: Int -> Int -> ImagenFlotante -> ImagenFlotante -> ImagenFlotante --funciona
 interp_apilar n m f g v1 v2 v3 =
-    let apiladoF = translate 0 (fromIntegral n) (f v1 v2 v3)
-        apiladoG = translate 0 (fromIntegral m) (g v1 v2 v3)
+    let n' = fromIntegral n
+        m' = fromIntegral m
+        apiladoF = f (add v1 ((n' / (m' + n')) V.* v3)) v2 ((n' / (m' + n')) V.* v3)
+        apiladoG = g v1 v2 ((m' / (m' + n')) V.* v3)
     in pictures [apiladoF, apiladoG]
 
 -- interpreta el operador de juntar
-interp_juntar :: Int -> Int -> ImagenFlotante -> ImagenFlotante -> ImagenFlotante
+interp_juntar :: Int -> Int -> ImagenFlotante -> ImagenFlotante -> ImagenFlotante --funciona
 interp_juntar n m f g v1 v2 v3 =
-    let juntadoF = translate (fromIntegral n) 0 (f v1 v2 v3)
-        juntadoG = translate (fromIntegral m) 0 (g v1 v2 v3)
+    let m' = fromIntegral m
+        n' = fromIntegral n
+        juntadoF = f v1 ((m' / (m' + n')) V.* v2) v3
+        juntadoG = g (add v1 ((m' / (m' + n')) V.* v2)) ((n' / (m' + n')) V.* v2) v3
     in pictures [juntadoF, juntadoG]
 
 -- interpreta el operador de encimar
-interp_encimar :: ImagenFlotante -> ImagenFlotante -> ImagenFlotante
+interp_encimar :: ImagenFlotante -> ImagenFlotante -> ImagenFlotante --funciona
 interp_encimar f g v1 v2 v3 =
     let encimadoF = f v1 v2 v3
         encimadoG = g v1 v2 v3
