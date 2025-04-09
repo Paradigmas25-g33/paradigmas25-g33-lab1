@@ -31,21 +31,21 @@ interp_rotar f v1 v2 v3 =
 -- Interpreta el operador de espejar
 interp_espejar :: ImagenFlotante -> ImagenFlotante --funciona
 interp_espejar f v1 v2 v3 =
-    let espejar = (f (add v1 (mitad (add v2 v3))) (mitad (add v2 v3)) (mitad (sub v3 v2)))
-    in espejar
-    
+    let rotar45 = f (add v1 v2) (sub (0,0) v2) v3
+    in rotar45
+
 
 -- interpreta el operador de rotación 45
 interp_rotar45 :: ImagenFlotante -> ImagenFlotante --funciona
 interp_rotar45 f v1 v2 v3 =
-    let rotar45 = f (add v1 v2) (sub (0,0) v2) v3
-    in rotar45
+    let espejar = (f (add v1 (mitad (add v2 v3))) (mitad (add v2 v3)) (mitad (sub v3 v2)))
+    in espejar
 
 -- interpreta el operador de apilar
 interp_apilar :: Int -> Int -> ImagenFlotante -> ImagenFlotante -> ImagenFlotante --funciona
 interp_apilar m n f g v1 v2 v3 =
-    let n' = fromIntegral n
-        m' = fromIntegral m
+    let m' = fromIntegral m
+        n' = fromIntegral n
         apiladoF = f (add v1 ((n' / (m' + n')) V.* v3)) v2 ((m' / (m' + n')) V.* v3)
         apiladoG = g v1 v2 ((n' / (m' + n')) V.* v3)
     in pictures [apiladoF, apiladoG]
@@ -69,11 +69,11 @@ interp_encimar f g v1 v2 v3 =
 -- interpreta cualquier expresión del tipo Dibujo a
 
 interp :: Interpretacion a -> Dibujo a -> ImagenFlotante
-interp f = foldDib 
-    f 
-    interp_rotar 
-    interp_espejar 
-    interp_rotar45 
-    (\n m d1 d2 -> interp_apilar (round n) (round m) d1 d2) 
-    (\n m d1 d2 -> interp_juntar (round n) (round m) d1 d2) 
+interp f = foldDib
+    f
+    interp_rotar
+    interp_rotar45
+    interp_espejar
+    (\m n d1 d2 -> interp_apilar (round m) (round n) d1 d2)
+    (\m n d1 d2 -> interp_juntar (round m) (round n) d1 d2)
     interp_encimar
