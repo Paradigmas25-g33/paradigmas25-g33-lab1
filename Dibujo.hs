@@ -39,7 +39,8 @@ r270 d = comp Rotar 3 d
 
 -- Dadas cuatro dibujos las ubica en los cuatro cuadrantes.
 cuarteto :: Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a -> Dibujo a
-cuarteto a b c d = (a.-.b) /// (c.-.d)
+cuarteto a b c d = (a///b) .-. (c///d)
+--cuarteto a b c d = (a///b) .-. (c///d)
 
 -- Una dibujo repetido con las cuatro rotaciones, superpuestas.
 encimar4 :: Dibujo a -> Dibujo a
